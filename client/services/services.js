@@ -1,16 +1,18 @@
 angular.module('venshurServices', [])
   .factory('Fetcher', Fetcher)
-  .factory('Auth', ['$rootScope', '$q', '$http', '$location', Auth]);
+  .factory('Auth', ['$rootScope', '$q', '$http', '$location', Auth])
+  .factory('mapService', mapservice)
 
 var trips = [];
 var currentTrip = {};
 
-function Fetcher ($http) {
+function Fetcher ($http,mapService) {
 
   var setCurrentTrip = function(trip){
     for(var key in trip){
       currentTrip[key] = trip[key];
     }
+    mapService.trip = currentTrip;
     return currentTrip;
   }
 
@@ -20,7 +22,6 @@ function Fetcher ($http) {
       url: '/api/trips'
     })
     .then(function (response) {
-      console.log('response from getTrips Fetcher: ', response);
       response.data.data.forEach(function(item, index){
         trips[index] = item;
       });
@@ -50,7 +51,7 @@ function Fetcher ($http) {
 }
 
 function Auth ($rootScope, $q, $http, $location){
-  function getAuth(){
+  function getAuth() {
     var userProfile = $rootScope.user.getItem('userProfile');
   }
   function checkAuth(){
@@ -72,4 +73,14 @@ function Auth ($rootScope, $q, $http, $location){
     getAuth: getAuth,
     checkAuth: checkAuth
   }
+}
+
+function mapservice(){
+  var mark,modalInstance,trip;
+
+  return {
+    trip:trip,
+    mark:mark,
+    modalInstance:modalInstance,
+  };
 }
